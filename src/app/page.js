@@ -8,6 +8,7 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState([]);
   const [weatherDetails, setWeatherDetails] = useState(null);
   const [forecastData, setForecastData] = useState([]);
+  const [uvIndex, setUvIndex] = useState(null);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -28,12 +29,38 @@ export default function Home() {
     }
   }, [searchText]);
 
+  useEffect(() => {
+    const fetchUVIndex = async () => {
+      try {
+        const myHeaders = new Headers();
+        myHeaders.append("x-access-token", "openuv-3i96anyrlubcu1aj-io");
+        myHeaders.append("Content-Type", "application/json");
+
+        const requestOptions = {
+          method: "GET",
+          headers: myHeaders,
+          redirect: "follow",
+        };
+
+        const response = await fetch(
+          "https://api.openuv.io/api/v1/uv?lat=41.69&lng=26.59&alt=100&dt=",
+          requestOptions
+        );
+        const result = await response.json();
+        setUvIndex(result.result.uv);
+      } catch (error) {
+        console.error("Error fetching UV index:", error);
+      }
+    };
+
+    fetchUVIndex();
+  }, []);
+
   const fetchWeatherDetails = async (cityId) => {
     try {
       const response = await axios.get(
         `https://api.openweathermap.org/data/2.5/weather?id=${cityId}&appid=ddffe405f7a43c3e417f986dc0a3f731&units=metric`
       );
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching weather details:", error);
@@ -79,7 +106,6 @@ export default function Home() {
         setWeatherDetails(weatherDetails);
         fetchForecastData(selectedCity.name); // City adını kullanarak hava durumu tahminlerini al
       } else {
-        console.log("Weather details not available for", selectedCity.name);
       }
     }
   };
@@ -233,11 +259,11 @@ export default function Home() {
                   <div className='Title justify-start items-center gap-3 flex'>
                     <div className='Icons w-6 h-6 p-0.5 justify-center items-center flex' />
                     <div className='UvIndex text-center text-slate-300 text-sm font-bold  leading-tight'>
-                      UV Index
+                      <p>UV Değeri: </p>
                     </div>
                   </div>
                   <div className=' text-neutral-50 text-base font-bold  leading-snug'>
-                    5
+                    {uvIndex}
                   </div>
                 </div>
               </div>
@@ -260,10 +286,10 @@ export default function Home() {
                     </div>
                     <div className='Details flex-col justify-start items-center flex'>
                       <div className='C text-center text-neutral-50 text-sm font-bold leading-tight'>
-                        {forecast.main.temp_max}°C
+                        {forecast.main.temp_max.toFixed()}°C
                       </div>
                       <div className='C text-center text-slate-500 text-sm font-bold leading-tight'>
-                        {forecast.main.temp_min}°C
+                        {forecast.main.temp_min.toFixed()}°C
                       </div>
                     </div>
                   </div>
