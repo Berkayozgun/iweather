@@ -7,6 +7,7 @@ export default function Home() {
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [weatherDetails, setWeatherDetails] = useState(null);
+  const [forecastData, setForecastData] = useState([]);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -40,12 +41,24 @@ export default function Home() {
     }
   };
 
-  const handleCitySelect = async (cityId) => {
+  const fetchForecastData = async (lat, lon) => {
+    try {
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=ddffe405f7a43c3e417f986dc0a3f731&units=metric`
+      );
+      setForecastData(response.data.list);
+    } catch (error) {
+      console.error("Error fetching forecast data:", error);
+    }
+  };
+
+  const handleCitySelect = async (cityId, lat, lon) => {
     const selectedCity = searchResults.find((city) => city.id === cityId);
     if (selectedCity) {
       const weatherDetails = await fetchWeatherDetails(cityId);
       if (weatherDetails) {
         setWeatherDetails(weatherDetails);
+        fetchForecastData(lat, lon);
       } else {
         console.log("Weather details not available for", selectedCity.name);
       }
@@ -66,9 +79,9 @@ export default function Home() {
   };
 
   return (
-    <div className='flex w-full h-full flex-col items-center justify-center gap-20'>
-      <div className='flex flex-col items-center justify-center w-full h-full gap-4'>
-        <div className='flex flex-row items-center justify-center'>
+    <div className='flex w-full  flex-row items-center justify-around gap-20'>
+      <div className='flex flex-col items-center justify-center gap-4 h-full'>
+        <div className='flex flex-row items-center mt-20 justify-center'>
           <div className='text-neutral-50 text-xl font-bold leading-7'>
             Welcome to
           </div>
@@ -93,7 +106,9 @@ export default function Home() {
               <div
                 key={city.id}
                 className='cursor-pointer px-4 py-2 hover:bg-neutral-700'
-                onClick={() => handleCitySelect(city.id)}
+                onClick={() =>
+                  handleCitySelect(city.id, city.coord.lat, city.coord.lon)
+                } // city'nin koordinatlarını al
               >
                 {city.name}, {city.sys.country}
               </div>
@@ -101,17 +116,18 @@ export default function Home() {
           </div>
         )}
       </div>
-      <div className='flex flex-col items-center justify-center gap-4'>
+      <div className='flex flex-col items-center justify-center gap-4 '>
         {weatherDetails && (
-          <div className='Content w-96 h-96 px-2 pt-2 pb-5 bg-neutral-900 flex-col justify-start items-end gap-2 inline-flex'>
-            <div className='Card self-stretch h-80 p-3 bg-zinc-900 rounded-xl flex-col justify-start items-start gap-3 flex'>
+          <div className='flex flex-col justify-center items-center gap-2'>
+            <div className='h-60 p-3 bg-zinc-900 rounded-xl flex-col justify-center items-center gap-3 flex'>
               <div className='Today w-80 h-72 relative rounded-lg'>
                 <div className='Background w-80 h-72 left-0 top-0 absolute justify-center items-center inline-flex'>
                   <Image
-                    width={80}
-                    height={72}
-                    src='https://via.placeholder.com/335x304'
+                    width={60}
+                    height={42}
+                    src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Black_colour.jpg/1536px-Black_colour.jpg'
                     alt='Current weather'
+                    className=' rounded-lg'
                   />
                 </div>
                 <div className='Weather p-1 left-[16px] top-[172px] absolute flex-col justify-center items-start gap-2 inline-flex'>
@@ -128,29 +144,29 @@ export default function Home() {
                   </div>
                 </div>
                 <div className='Icons w-40 h-40 left-[175px] top-[144px] absolute' />
-                <div className='Info h-10 left-[20px] top-[20px] absolute flex-col justify-start items-start gap-56 inline-flex'>
+                <div className='Info h-10 left-[20px] top-[20px] absolute flex-col justify-start items-start inline-flex'>
                   <div className='Location flex-col justify-start items-start gap-0.5 flex'>
                     <div className='IstanbulTr text-center text-neutral-50 text-base font-bold  leading-snug'>
-                      <p>Weather details for {weatherDetails.name}</p>
+                      <p>{weatherDetails.name}</p>
                     </div>
                     <div className='MondayMay152023 text-center text-neutral-50 text-xs font-normal  leading-none'>
-                      Monday, May 15, 2023
+                      {new Date().toDateString()}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className='WeatherDetail self-stretch h-72 px-4 py-1 bg-zinc-900 rounded-xl flex-col justify-start items-start gap-2 flex'>
-              <div className='List self-stretch h-72 flex-col justify-start items-start flex'>
-                <div className='Item self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
-                  <div className='Title justify-start items-center gap-3 flex'>
+            <div className='w-full h-72 px-4 py-1 bg-zinc-900 rounded-xl flex-col justify-center items-center gap-2 flex'>
+              <div className='w-full h-72 flex-col justify-start items-start flex'>
+                <div className='w-full py-4 border-b border-gray-900 justify-between items-center inline-flex'>
+                  <div className='w-full justify-start items-center gap-3 flex'>
                     <div className='Icons w-6 h-6 px-1.5 py-px justify-center items-center flex' />
                     <div className='ThermalSensation text-center text-slate-300 text-sm font-bold  leading-tight'>
                       Thermal sensation
                     </div>
                   </div>
                   <div className='C text-neutral-50 text-base font-bold  leading-snug'>
-                    26ºc
+                    {weatherDetails.main.feels_like}°C
                   </div>
                 </div>
                 <div className='Item self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
@@ -173,7 +189,7 @@ export default function Home() {
                   </div>
                   <div className='KmH'>
                     <span className='text-neutral-50 text-base font-bold  leading-snug'>
-                      8
+                      {weatherDetails.wind.speed}
                     </span>
                     <span className='text-neutral-50 text-xl font-bold  leading-7'>
                       {" "}
@@ -191,7 +207,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className=' text-neutral-50 text-base font-bold  leading-snug'>
-                    40%
+                    {weatherDetails.main.humidity}%
                   </div>
                 </div>
                 <div className='Item self-stretch py-4 justify-between items-center inline-flex'>
