@@ -41,12 +41,31 @@ export default function Home() {
     }
   };
 
-  const fetchForecastData = async (lat, lon) => {
+  // Önce, her bir güne ait verileri gruplayacak bir fonksiyon tanımlayalım
+  const groupForecastByDay = (forecastList) => {
+    const dailyForecasts = {};
+    forecastList.forEach((forecast) => {
+      const date = forecast.dt_txt.split(" ")[0]; // Tarih bilgisini al
+      if (!dailyForecasts[date]) {
+        // Eğer bu tarih için henüz bir girdi yoksa, yeni bir girdi oluştur
+        dailyForecasts[date] = [];
+      }
+      dailyForecasts[date].push(forecast); // Tahmin verisini ilgili tarihe ekle
+    });
+    return dailyForecasts;
+  };
+
+  // Ardından, tahminleri günlük verilere gruplayıp sadece ilk tahmini alacağımız şekilde güncelleyelim
+  const fetchForecastData = async (city) => {
     try {
       const response = await axios.get(
         `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=ddffe405f7a43c3e417f986dc0a3f731&units=metric`
       );
-      setForecastData(response.data.list);
+      const dailyForecasts = groupForecastByDay(response.data.list); // Tahminleri günlük olarak grupla
+      const dailyForecastList = Object.values(dailyForecasts)
+        .slice(1, 6)
+        .map((forecasts) => forecasts[0]); // Bugünden sonraki 5 gün için sadece ilk tahmini al
+      setForecastData(dailyForecastList); // Günlük tahmin verilerini ayarla
     } catch (error) {
       console.error("Error fetching forecast data:", error);
     }
@@ -58,7 +77,7 @@ export default function Home() {
       const weatherDetails = await fetchWeatherDetails(cityId);
       if (weatherDetails) {
         setWeatherDetails(weatherDetails);
-        fetchForecastData(lat, lon);
+        fetchForecastData(selectedCity.name); // City adını kullanarak hava durumu tahminlerini al
       } else {
         console.log("Weather details not available for", selectedCity.name);
       }
@@ -225,80 +244,30 @@ export default function Home() {
             </div>
             <div className='NextDays w-96 h-44 p-3 bg-zinc-900 rounded-xl justify-center items-center inline-flex'>
               <div className='List grow shrink basis-0 self-stretch justify-start items-center inline-flex'>
-                <div className='Day grow shrink basis-0 self-stretch flex-col justify-center items-center gap-1 inline-flex'>
-                  <div className='Mon text-center text-slate-300 text-sm font-bold  leading-tight'>
-                    Mon
-                  </div>
-                  <div className='Icons w-14 h-14 relative'>
-                    <div className='Light w-6 h-1 left-[14.62px] top-[38.24px] absolute bg-yellow-200 rounded-3xl blur-3xl' />
-                  </div>
-                  <div className='Details flex-col justify-start items-center flex'>
-                    <div className='C text-center text-neutral-50 text-sm font-bold  leading-tight'>
-                      32ºc
+                {forecastData.map((forecast, index) => (
+                  <div
+                    key={index}
+                    className='Day grow shrink basis-0 self-stretch flex-col justify-center items-center gap-1 inline-flex'
+                  >
+                    <div className='DayText text-center text-slate-300 text-sm font-bold leading-tight'>
+                      {new Date(forecast.dt * 1000).toLocaleDateString(
+                        "en-US",
+                        { weekday: "short" }
+                      )}
                     </div>
-                    <div className='C text-center text-slate-500 text-sm font-bold  leading-tight'>
-                      26ºc{" "}
+                    <div className='Icons w-14 h-14 relative'>
+                      <div className='Light w-6 h-1 left-[14.62px] top-[38.24px] absolute bg-yellow-200 rounded-3xl blur-3xl' />
                     </div>
-                  </div>
-                </div>
-                <div className='Day grow shrink basis-0 self-stretch flex-col justify-center items-center gap-1 inline-flex'>
-                  <div className='Tue text-center text-slate-300 text-sm font-bold  leading-tight'>
-                    Tue
-                  </div>
-                  <div className='Icons w-14 h-14 relative'>
-                    <div className='Light w-6 h-1 left-[14.62px] top-[38.24px] absolute rounded-3xl blur-3xl' />
-                  </div>
-                  <div className='Details flex-col justify-start items-center flex'>
-                    <div className='C text-center text-neutral-50 text-sm font-bold  leading-tight'>
-                      32ºc
-                    </div>
-                    <div className='C text-center text-slate-500 text-sm font-bold  leading-tight'>
-                      26ºc{" "}
+                    <div className='Details flex-col justify-start items-center flex'>
+                      <div className='C text-center text-neutral-50 text-sm font-bold leading-tight'>
+                        {forecast.main.temp_max}°C
+                      </div>
+                      <div className='C text-center text-slate-500 text-sm font-bold leading-tight'>
+                        {forecast.main.temp_min}°C
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className='Day grow shrink basis-0 self-stretch flex-col justify-center items-center gap-1 inline-flex'>
-                  <div className='Wed text-center text-slate-300 text-sm font-bold  leading-tight'>
-                    Wed
-                  </div>
-                  <div className='Icons w-14 h-14 relative' />
-                  <div className='Details flex-col justify-start items-center flex'>
-                    <div className='C text-center text-neutral-50 text-sm font-bold  leading-tight'>
-                      32ºc
-                    </div>
-                    <div className='C text-center text-slate-500 text-sm font-bold  leading-tight'>
-                      26ºc{" "}
-                    </div>
-                  </div>
-                </div>
-                <div className='Day grow shrink basis-0 self-stretch flex-col justify-center items-center gap-1 inline-flex'>
-                  <div className='Thu text-center text-slate-300 text-sm font-bold  leading-tight'>
-                    Thu
-                  </div>
-                  <div className='Icons w-14 h-14 relative' />
-                  <div className='Details flex-col justify-start items-center flex'>
-                    <div className='C text-center text-neutral-50 text-sm font-bold  leading-tight'>
-                      32ºc
-                    </div>
-                    <div className='C text-center text-slate-500 text-sm font-bold  leading-tight'>
-                      26ºc{" "}
-                    </div>
-                  </div>
-                </div>
-                <div className='Day grow shrink basis-0 self-stretch flex-col justify-center items-center gap-1 inline-flex'>
-                  <div className='Sun text-center text-slate-300 text-sm font-bold  leading-tight'>
-                    Sun
-                  </div>
-                  <div className='Icons w-14 h-14 px-3.5 py-3.5 justify-center items-center inline-flex' />
-                  <div className='Details flex-col justify-start items-center flex'>
-                    <div className='C text-center text-neutral-50 text-sm font-bold  leading-tight'>
-                      32ºc
-                    </div>
-                    <div className='C text-center text-slate-500 text-sm font-bold  leading-tight'>
-                      26ºc{" "}
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
