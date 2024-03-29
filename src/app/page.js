@@ -2,6 +2,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/Image";
+import stormday from "/src/app/images/Weather=StormMoment=Day.png";
+import stormnight from "/src/app/images/Weather=StormMoment=Night.png";
+import cloudyday from "/src/app/images/Weather=CloudyMoment=Day.png";
+import cloudynight from "/src/app/images/Weather=CloudyMoment=Night.png";
+import rainday from "/src/app/images/Weather=RainMoment=Day.png";
+import rainnight from "/src/app/images/Weather=RainMoment=Night.png";
+import clearday from "/src/app/images/Weather=ClearMoment=Day.png";
+import clearnight from "/src/app/images/Weather=ClearMoment=Night.png";
 
 export default function Home() {
   const [searchText, setSearchText] = useState("");
@@ -165,36 +173,70 @@ export default function Home() {
         {weatherDetails && (
           <div className='flex flex-col justify-center items-center gap-2'>
             <div className='h-60 p-3 bg-zinc-900 rounded-xl flex-col justify-center items-center gap-3 flex'>
-              <div className='Today w-80 h-72 relative rounded-lg'>
-                <div className='Background w-80 h-72 left-0 top-0 absolute justify-center items-center inline-flex'>
+              <div className='w-80 h-72 relative rounded-lg'>
+                <div className='w-80 h-72 left-0 top-0 absolute justify-center items-center inline-flex'>
+                  <div className='w-40 h-40 left-[20px] top-[144px] absolute'>
+                    {weatherDetails.weather[0].main}
+                  </div>
                   <Image
                     width={60}
                     height={42}
-                    src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Black_colour.jpg/1536px-Black_colour.jpg'
+                    // determine the weather image based on the weather condition
+                    src={
+                      weatherDetails.weather[0].main === "Clear" &&
+                      new Date().getHours() >= 6 &&
+                      new Date().getHours() < 18
+                        ? clearday
+                        : weatherDetails.weather[0].main === "Clear" &&
+                          (new Date().getHours() < 6 ||
+                            new Date().getHours() >= 18)
+                        ? clearnight
+                        : weatherDetails.weather[0].main === "Clouds" &&
+                          new Date().getHours() >= 6 &&
+                          new Date().getHours() < 18
+                        ? cloudyday
+                        : weatherDetails.weather[0].main === "Clouds" &&
+                          (new Date().getHours() < 6 ||
+                          new Date().getHours() >= 18
+                            ? cloudynight
+                            : weatherDetails.weather[0].main === "Rain" &&
+                              new Date().getHours() >= 6 &&
+                              new Date().getHours() < 18
+                            ? rainday
+                            : weatherDetails.weather[0].main === "Rain" &&
+                              (new Date().getHours() < 6 ||
+                                new Date().getHours() >= 18)
+                            ? rainnight
+                            : weatherDetails.weather[0].main === "Storm" &&
+                              new Date().getHours() >= 6 &&
+                              new Date().getHours() < 18
+                            ? stormday
+                            : stormnight)
+                    }
                     alt='Current weather'
-                    className=' rounded-lg'
+                    className='rounded-lg'
                   />
                 </div>
-                <div className='Weather p-1 left-[16px] top-[172px] absolute flex-col justify-center items-start gap-2 inline-flex'>
-                  <div className='C text-right text-white text-5xl font-extrabold  leading-10'>
+                <div className='p-1 left-[16px] top-[172px] absolute flex-col justify-center items-start gap-2 inline-flex'>
+                  <div className='text-right text-white text-5xl font-extrabold  leading-10'>
                     {weatherDetails.main.temp}°C
                   </div>
-                  <div className='Details flex-col justify-center items-start flex'>
-                    <div className='C32C text-center text-white text-base font-bold  leading-snug'>
+                  <div className='flex-col justify-center items-start flex'>
+                    <div className='text-center text-white text-base font-bold  leading-snug'>
                       26ºc / 32ºc
                     </div>
-                    <div className='FewClouds text-white text-sm font-normal  leading-tight'>
+                    <div className=' text-white text-sm font-normal  leading-tight'>
                       Few clouds
                     </div>
                   </div>
                 </div>
-                <div className='Icons w-40 h-40 left-[175px] top-[144px] absolute' />
-                <div className='Info h-10 left-[20px] top-[20px] absolute flex-col justify-start items-start inline-flex'>
-                  <div className='Location flex-col justify-start items-start gap-0.5 flex'>
-                    <div className='IstanbulTr text-center text-neutral-50 text-base font-bold  leading-snug'>
+                <div className='w-40 h-40 left-[175px] top-[144px] absolute' />
+                <div className='h-10 left-[20px] top-[20px] absolute flex-col justify-start items-start inline-flex'>
+                  <div className='flex-col justify-start items-start gap-0.5 flex'>
+                    <div className='text-center text-neutral-50 text-base font-bold  leading-snug'>
                       <p>{weatherDetails.name}</p>
                     </div>
-                    <div className='MondayMay152023 text-center text-neutral-50 text-xs font-normal  leading-none'>
+                    <div className='text-center text-neutral-50 text-xs font-normal  leading-none'>
                       {new Date().toDateString()}
                     </div>
                   </div>
@@ -205,19 +247,19 @@ export default function Home() {
               <div className='w-full h-72 flex-col justify-start items-start flex'>
                 <div className='w-full py-4 border-b border-gray-900 justify-between items-center inline-flex'>
                   <div className='w-full justify-start items-center gap-3 flex'>
-                    <div className='Icons w-6 h-6 px-1.5 py-px justify-center items-center flex' />
-                    <div className='ThermalSensation text-center text-slate-300 text-sm font-bold  leading-tight'>
+                    <div className='w-6 h-6 px-1.5 py-px justify-center items-center flex' />
+                    <div className='text-center text-slate-300 text-sm font-bold  leading-tight'>
                       Thermal sensation
                     </div>
                   </div>
-                  <div className='C text-neutral-50 text-base font-bold  leading-snug'>
+                  <div className=' text-neutral-50 text-base font-bold  leading-snug'>
                     {weatherDetails.main.feels_like}°C
                   </div>
                 </div>
-                <div className='Item self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
-                  <div className='Title justify-start items-center gap-3 flex'>
-                    <div className='Icons w-6 h-6 px-0.5 pt-0.5 pb-px justify-center items-center flex' />
-                    <div className='ProbabilityOfRain text-center text-slate-300 text-sm font-bold  leading-tight'>
+                <div className='self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
+                  <div className='justify-start items-center gap-3 flex'>
+                    <div className='w-6 h-6 px-0.5 pt-0.5 pb-px justify-center items-center flex' />
+                    <div className='text-center text-slate-300 text-sm font-bold  leading-tight'>
                       Probability of rain
                     </div>
                   </div>
@@ -225,10 +267,10 @@ export default function Home() {
                     0%
                   </div>
                 </div>
-                <div className='Item self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
-                  <div className='Title justify-start items-center gap-3 flex'>
-                    <div className='Icons w-6 h-6 px-0.5 py-1 justify-center items-center flex' />
-                    <div className='WindSpeed text-center text-slate-300 text-sm font-bold  leading-tight'>
+                <div className='self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
+                  <div className='justify-start items-center gap-3 flex'>
+                    <div className=' w-6 h-6 px-0.5 py-1 justify-center items-center flex' />
+                    <div className='text-center text-slate-300 text-sm font-bold  leading-tight'>
                       Wind speed
                     </div>
                   </div>
@@ -244,10 +286,10 @@ export default function Home() {
                     </span>
                   </div>
                 </div>
-                <div className='Item self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
-                  <div className='Title justify-start items-center gap-3 flex'>
-                    <div className='Icons w-6 h-6 px-1 pt-px pb-0.5 justify-center items-center flex' />
-                    <div className='AirHumidity text-center text-slate-300 text-sm font-bold  leading-tight'>
+                <div className='self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
+                  <div className='justify-start items-center gap-3 flex'>
+                    <div className='w-6 h-6 px-1 pt-px pb-0.5 justify-center items-center flex' />
+                    <div className='text-center text-slate-300 text-sm font-bold  leading-tight'>
                       Air humidity
                     </div>
                   </div>
@@ -255,10 +297,10 @@ export default function Home() {
                     {weatherDetails.main.humidity}%
                   </div>
                 </div>
-                <div className='Item self-stretch py-4 justify-between items-center inline-flex'>
-                  <div className='Title justify-start items-center gap-3 flex'>
-                    <div className='Icons w-6 h-6 p-0.5 justify-center items-center flex' />
-                    <div className='UvIndex text-center text-slate-300 text-sm font-bold  leading-tight'>
+                <div className='self-stretch py-4 justify-between items-center inline-flex'>
+                  <div className='justify-start items-center gap-3 flex'>
+                    <div className='w-6 h-6 p-0.5 justify-center items-center flex' />
+                    <div className='text-center text-slate-300 text-sm font-bold  leading-tight'>
                       <p>UV Değeri: </p>
                     </div>
                   </div>
@@ -268,27 +310,27 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className='NextDays w-96 h-44 p-3 bg-zinc-900 rounded-xl justify-center items-center inline-flex'>
-              <div className='List grow shrink basis-0 self-stretch justify-start items-center inline-flex'>
+            <div className='w-96 h-44 p-3 bg-zinc-900 rounded-xl justify-center items-center inline-flex'>
+              <div className='grow shrink basis-0 self-stretch justify-start items-center inline-flex'>
                 {forecastData.map((forecast, index) => (
                   <div
                     key={index}
-                    className='Day grow shrink basis-0 self-stretch flex-col justify-center items-center gap-1 inline-flex'
+                    className='grow shrink basis-0 self-stretch flex-col justify-center items-center gap-1 inline-flex'
                   >
-                    <div className='DayText text-center text-slate-300 text-sm font-bold leading-tight'>
+                    <div className='text-center text-slate-300 text-sm font-bold leading-tight'>
                       {new Date(forecast.dt * 1000).toLocaleDateString(
                         "en-US",
                         { weekday: "short" }
                       )}
                     </div>
-                    <div className='Icons w-14 h-14 relative'>
-                      <div className='Light w-6 h-1 left-[14.62px] top-[38.24px] absolute bg-yellow-200 rounded-3xl blur-3xl' />
+                    <div className='w-14 h-14 relative'>
+                      <div className='w-6 h-1 left-[14.62px] top-[38.24px] absolute bg-yellow-200 rounded-3xl blur-3xl' />
                     </div>
-                    <div className='Details flex-col justify-start items-center flex'>
-                      <div className='C text-center text-neutral-50 text-sm font-bold leading-tight'>
+                    <div className='flex-col justify-start items-center flex'>
+                      <div className='text-center text-neutral-50 text-sm font-bold leading-tight'>
                         {forecast.main.temp_max.toFixed()}°C
                       </div>
-                      <div className='C text-center text-slate-500 text-sm font-bold leading-tight'>
+                      <div className='text-center text-slate-500 text-sm font-bold leading-tight'>
                         {forecast.main.temp_min.toFixed()}°C
                       </div>
                     </div>

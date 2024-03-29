@@ -8,6 +8,7 @@ const nextConfig = {
       "via.placeholder.com",
       "picsum.photos",
       "upload.wikimedia.org",
+      "/src/app/images",
     ],
   },
 };
