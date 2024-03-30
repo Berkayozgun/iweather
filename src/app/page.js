@@ -118,21 +118,8 @@ export default function Home() {
     }
   };
 
-  const calculateThermalSensation = function (temp, windSpeed) {
-    return (
-      13.12 +
-      0.6215 * temp -
-      11.37 * Math.pow(windSpeed, 0.16) +
-      0.3965 * temp * Math.pow(windSpeed, 0.16)
-    );
-  };
-
-  const calculateProbabilityOfRain = function (temp, humidity) {
-    return 0.5 * (temp - 14) + 0.25 * (humidity - 70);
-  };
-
   return (
-    <div className='flex w-full  flex-row items-center justify-around gap-20'>
+    <div className='flex w-full bg-white flex-row items-center justify-around min-h-screen gap-20'>
       <div className='flex flex-col items-center justify-center gap-4 h-full'>
         <div className='flex flex-row items-center mt-20 justify-center'>
           <div className='text-neutral-50 text-xl font-bold leading-7'>
@@ -169,18 +156,16 @@ export default function Home() {
           </div>
         )}
       </div>
-      <div className='flex flex-col items-center justify-center gap-4 '>
+      <div className='flex flex-col items-center h-full justify-center gap-4 '>
         {weatherDetails && (
           <div className='flex flex-col justify-center items-center gap-2'>
-            <div className='h-60 p-3 bg-zinc-900 rounded-xl flex-col justify-center items-center gap-3 flex'>
-              <div className='w-80 h-72 relative rounded-lg'>
-                <div className='w-80 h-72 left-0 top-0 absolute justify-center items-center inline-flex'>
-                  <div className='w-40 h-40 left-[20px] top-[144px] absolute'>
+            <div className='h-80 w-full bg-zinc-900 rounded-xl flex-col items-center justify-center flex'>
+              <div className='w-full h-72 relative rounded-lg'>
+                <div className='w-full h-72 left-0 top-0 absolute justify-center items-center inline-flex'>
+                  <div className='w-full p-4 h-40 left-[20px] top-[144px] absolute  '>
                     {weatherDetails.weather[0].main}
                   </div>
                   <Image
-                    width={60}
-                    height={42}
                     // determine the weather image based on the weather condition
                     src={
                       weatherDetails.weather[0].main === "Clear" &&
@@ -214,25 +199,26 @@ export default function Home() {
                             : stormnight)
                     }
                     alt='Current weather'
-                    className='rounded-lg'
+                    className='rounded-lg w-[350px] self-stretch h-72 '
                   />
                 </div>
-                <div className='p-1 left-[16px] top-[172px] absolute flex-col justify-center items-start gap-2 inline-flex'>
-                  <div className='text-right text-white text-5xl font-extrabold  leading-10'>
-                    {weatherDetails.main.temp}°C
+                <div className='p-4 left-[20px] top-[172px] absolute flex-col justify-center items-start gap-2 inline-flex'>
+                  <div className='text-right text-white text-3xl font-extrabold  leading-10'>
+                    {weatherDetails.main.temp.toFixed()}°C
                   </div>
-                  <div className='flex-col justify-center items-start flex'>
+                  <div className='flex-col justify-center items-start flex '>
                     <div className='text-center text-white text-base font-bold  leading-snug'>
-                      26ºc / 32ºc
+                      {weatherDetails.main.temp_min} ºc /{" "}
+                      {weatherDetails.main.temp_max}ºc
                     </div>
                     <div className=' text-white text-sm font-normal  leading-tight'>
-                      Few clouds
+                      {weatherDetails.weather[0].description}
                     </div>
                   </div>
                 </div>
                 <div className='w-40 h-40 left-[175px] top-[144px] absolute' />
-                <div className='h-10 left-[20px] top-[20px] absolute flex-col justify-start items-start inline-flex'>
-                  <div className='flex-col justify-start items-start gap-0.5 flex'>
+                <div className='h-10 left-[20px] top-[20px] absolute flex-col justify-start items-start p-4 inline-flex'>
+                  <div className='flex-col justify-start items-start gap-1 flex'>
                     <div className='text-center text-neutral-50 text-base font-bold  leading-snug'>
                       <p>{weatherDetails.name}</p>
                     </div>
@@ -243,6 +229,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
             <div className='w-full h-72 px-4 py-1 bg-zinc-900 rounded-xl flex-col justify-center items-center gap-2 flex'>
               <div className='w-full h-72 flex-col justify-start items-start flex'>
                 <div className='w-full py-4 border-b border-gray-900 justify-between items-center inline-flex'>
@@ -253,7 +240,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className=' text-neutral-50 text-base font-bold  leading-snug'>
-                    {weatherDetails.main.feels_like}°C
+                    {weatherDetails.main.feels_like.toFixed()}°C
                   </div>
                 </div>
                 <div className='self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
@@ -264,7 +251,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className=' text-neutral-50 text-base font-bold  leading-snug'>
-                    0%
+                    {weatherDetails.clouds.all}%
                   </div>
                 </div>
                 <div className='self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
