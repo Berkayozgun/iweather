@@ -10,6 +10,18 @@ import rainday from "/src/app/images/Weather=RainMoment=Day.png";
 import rainnight from "/src/app/images/Weather=RainMoment=Night.png";
 import clearday from "/src/app/images/Weather=ClearMoment=Day.png";
 import clearnight from "/src/app/images/Weather=ClearMoment=Night.png";
+import {
+  clearDaySvg,
+  clearNightSvg,
+  cloudyDaySvg,
+  cloudyNightSvg,
+  fewCloudsDaySvg,
+  fewCloudsNightSvg,
+  rainDaySvg,
+  rainNightSvg,
+  stormDaySvg,
+  stormNightSvg,
+} from "/src/app/images/SvgRepository.js";
 
 export default function Home() {
   const [searchText, setSearchText] = useState("");
@@ -90,6 +102,8 @@ export default function Home() {
     return dailyForecasts;
   };
 
+  // 5 günlük tahminleri clear, cloudy, rain, storm şeklinde göstermek için dataları gruplayalım
+
   // Ardından, tahminleri günlük verilere gruplayıp sadece ilk tahmini alacağımız şekilde güncelleyelim
   const fetchForecastData = async (city) => {
     try {
@@ -119,7 +133,7 @@ export default function Home() {
   };
 
   return (
-    <div className='flex w-full bg-white flex-row items-center justify-around min-h-screen gap-20'>
+    <div className='flex w-full  flex-row items-center justify-around min-h-screen gap-20'>
       <div className='flex flex-col items-center justify-center gap-4 h-full'>
         <div className='flex flex-row items-center mt-20 justify-center'>
           <div className='text-neutral-50 text-xl font-bold leading-7'>
@@ -311,7 +325,44 @@ export default function Home() {
                       )}
                     </div>
                     <div className='w-14 h-14 relative'>
-                      <div className='w-6 h-1 left-[14.62px] top-[38.24px] absolute bg-yellow-200 rounded-3xl blur-3xl' />
+                      <div className='w-20 h-20 flex '>
+                        {forecast.weather[0].main === "Clear" && (
+                          <Image
+                            src={
+                              new Date().getHours() >= 6 &&
+                              new Date().getHours() < 18
+                                ? clearDaySvg
+                                : clearNightSvg
+                            }
+                            alt='Weather icon'
+                            className='w-16 h-16'
+                          />
+                        )}
+                        {forecast.weather[0].main === "Clouds" && (
+                          <Image
+                            src={
+                              new Date().getHours() >= 6 &&
+                              new Date().getHours() < 18
+                                ? cloudyDaySvg
+                                : cloudyNightSvg
+                            }
+                            alt='Weather icon'
+                            className='w-16 h-16'
+                          />
+                        )}
+                        {forecast.weather[0].main === "Rain" && (
+                          <Image
+                            src={
+                              new Date().getHours() >= 6 &&
+                              new Date().getHours() < 18
+                                ? rainDaySvg
+                                : rainNightSvg
+                            }
+                            alt='Weather icon'
+                            className='w-16 h-16'
+                          />
+                        )}
+                      </div>
                     </div>
                     <div className='flex-col justify-start items-center flex'>
                       <div className='text-center text-neutral-50 text-sm font-bold leading-tight'>
