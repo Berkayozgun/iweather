@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Image from "next/Image";
+import Image from "next/image";
 import stormday from "/src/app/images/Weather=StormMoment=Day.png";
 import stormnight from "/src/app/images/Weather=StormMoment=Night.png";
 import cloudyday from "/src/app/images/Weather=CloudyMoment=Day.png";
