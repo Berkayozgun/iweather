@@ -2,15 +2,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
-import stormday from "./images/stormday.png";
-import stormnight from "./images/stormnight.png";
-import rainday from "./images/rainday.png";
-import rainnight from "./images/rainnight.png";
-import clearday from "./images/clearday.png";
-import clearnight from "./images/clearnight.png";
-import cloudynight from "./images/cloudynight.png";
-import cloudyday from "./images/cloudyday.png";
-import mistpng from "./images/foggy.png";
+
+import {
+  clearDayPng,
+  clearNightPng,
+  cloudyDayPng,
+  cloudyNightPng,
+  rainDayPng,
+  rainNightPng,
+  stormDayPng,
+  stormNightPng,
+  mistPng,
+} from "/src/app/images/PngRepository.js";
 
 import {
   clearDaySvg,
@@ -186,36 +189,36 @@ export default function Home() {
                     // determine the weather image based on the weather condition
                     src={
                       weatherDetails.weather[0].main === "Mist"
-                        ? mistpng
+                        ? mistPng
                         : weatherDetails.weather[0].main === "Clear" &&
                           new Date().getHours() >= 6 &&
                           new Date().getHours() < 18
-                        ? clearday
+                        ? clearDayPng
                         : weatherDetails.weather[0].main === "Clear" &&
                           (new Date().getHours() < 6 ||
                             new Date().getHours() >= 18)
-                        ? clearnight
+                        ? clearNightPng
                         : weatherDetails.weather[0].main === "Clouds" &&
                           new Date().getHours() >= 6 &&
                           new Date().getHours() < 18
-                        ? cloudyday
+                        ? cloudyDayPng
                         : weatherDetails.weather[0].main === "Clouds" &&
                           (new Date().getHours() < 6 ||
                           new Date().getHours() >= 18
-                            ? cloudynight
+                            ? cloudyNightPng
                             : weatherDetails.weather[0].main === "Rain" &&
                               new Date().getHours() >= 6 &&
                               new Date().getHours() < 18
-                            ? rainday
+                            ? rainDayPng
                             : weatherDetails.weather[0].main === "Rain" &&
                               (new Date().getHours() < 6 ||
                                 new Date().getHours() >= 18)
-                            ? rainnight
+                            ? rainNightPng
                             : weatherDetails.weather[0].main === "Storm" &&
                               new Date().getHours() >= 6 &&
                               new Date().getHours() < 18
-                            ? stormday
-                            : stormnight)
+                            ? stormDayPng
+                            : stormNightPng)
                     }
                     alt='Current weather'
                     className='rounded-lg w-[350px] self-stretch h-72 '
