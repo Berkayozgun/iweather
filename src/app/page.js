@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
-import stormday from "/src/app/images/stormday.png";
-import stormnight from "/src/app/images/stormnight.png";
-import rainday from "/src/app/images/rainday.png";
-import rainnight from "/src/app/images/rainnight.png";
-import clearday from "/src/app/images/clearday.png";
-import clearnight from "/src/app/images/clearnight.png";
-import cloudynight from "/src/app/images/cloudynight.png";
-import cloudyday from "/src/app/images/cloudyday.png";
-import mistpng from "/src/app/images/foggy.png";
+import stormday from "src/app/images/stormday.png";
+import stormnight from "src/app/images/stormnight.png";
+import rainday from "src/app/images/rainday.png";
+import rainnight from "src/app/images/rainnight.png";
+import clearday from "src/app/images/clearday.png";
+import clearnight from "/rc/app/images/clearnight.png";
+import cloudynight from "src/app/images/cloudynight.png";
+import cloudyday from "src/app/images/cloudyday.png";
+import mistpng from "src/app/images/foggy.png";
 
 import {
   clearDaySvg,
