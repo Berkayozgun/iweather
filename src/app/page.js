@@ -34,6 +34,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchCities = async () => {
+      // Fetch cities from the OpenWeatherMap API
       try {
         const response = await axios.get(
           `https://api.openweathermap.org/data/2.5/find?q=${searchText}&appid=ddffe405f7a43c3e417f986dc0a3f731&units=metric`
@@ -45,6 +46,7 @@ export default function Home() {
     };
 
     if (searchText.length >= 3) {
+      // If the search text is at least 3 characters long, fetch cities
       fetchCities();
     } else {
       setSearchResults([]);
@@ -53,6 +55,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchUVIndex = async () => {
+      // Fetch the UV index from the OpenUV API
       try {
         const myHeaders = new Headers();
         myHeaders.append("x-access-token", "openuv-3i96anyrlubcu1aj-io");
@@ -79,6 +82,7 @@ export default function Home() {
   }, []);
 
   const fetchWeatherDetails = async (cityId) => {
+    // Fetch the weather details from the OpenWeatherMap API
     try {
       const response = await axios.get(
         `https://api.openweathermap.org/data/2.5/weather?id=${cityId}&appid=ddffe405f7a43c3e417f986dc0a3f731&units=metric`
@@ -90,23 +94,21 @@ export default function Home() {
     }
   };
 
-  // Önce, her bir güne ait verileri gruplayacak bir fonksiyon tanımlayalım
   const groupForecastByDay = (forecastList) => {
+    // Group the forecast data by day
     const dailyForecasts = {};
     forecastList.forEach((forecast) => {
-      const date = forecast.dt_txt.split(" ")[0]; // Tarih bilgisini al
+      const date = forecast.dt_txt.split(" ")[0]; // Get the date part of the forecast date
       if (!dailyForecasts[date]) {
-        // Eğer bu tarih için henüz bir girdi yoksa, yeni bir girdi oluştur
+        // If there is no forecast data for the date, create an empty array
         dailyForecasts[date] = [];
       }
-      dailyForecasts[date].push(forecast); // Tahmin verisini ilgili tarihe ekle
+      dailyForecasts[date].push(forecast); // Add the forecast data to the array
     });
     return dailyForecasts;
   };
 
-  // 5 günlük tahminleri clear, cloudy, rain, storm şeklinde göstermek için dataları gruplayalım
-
-  // Ardından, tahminleri günlük verilere gruplayıp sadece ilk tahmini alacağımız şekilde güncelleyelim
+  // Fetch the forecast data from the OpenWeatherMap API
   const fetchForecastData = async (city) => {
     try {
       const response = await axios.get(
@@ -123,6 +125,7 @@ export default function Home() {
   };
 
   const handleCitySelect = async (cityId, lat, lon) => {
+    // Handle the selection of a city
     const selectedCity = searchResults.find((city) => city.id === cityId);
     if (selectedCity) {
       const weatherDetails = await fetchWeatherDetails(cityId);
@@ -164,7 +167,7 @@ export default function Home() {
                 className='cursor-pointer px-4 py-2 hover:bg-gray-600 rounded-xl'
                 onClick={() =>
                   handleCitySelect(city.id, city.coord.lat, city.coord.lon)
-                } // city'nin koordinatlarını al
+                } // Handle the selection of a city
               >
                 {city.name}, {city.sys.country}
               </div>
