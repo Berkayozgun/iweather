@@ -272,7 +272,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className=' text-neutral-50 text-base font-bold  leading-snug'>
-                    {weatherDetails.main.feels_like.toFixed()}°C
+                    {weatherDetails.main.feels_like.toFixed()} °C
                   </div>
                 </div>
                 <div className='self-stretch py-4 border-b border-gray-900 justify-between items-center inline-flex'>
