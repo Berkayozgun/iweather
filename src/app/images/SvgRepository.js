@@ -1,0 +1,11 @@
+export const clearDaySvg = require("./clear-day.svg");
+export const clearNightSvg = require("./clear-night.svg");
+export const cloudyDaySvg = require("./cloudy-day.svg");
+export const cloudyNightSvg = require("./cloudy-night.svg");
+export const fewCloudsDaySvg = require("./few-clouds-day.svg");
+export const fewCloudsNightSvg = require("./few-clouds-night.svg");
+export const rainDaySvg = require("./rain-day.svg");
+export const rainNightSvg = require("./rain-night.svg");
+export const stormDaySvg = require("./storm-day.svg");
+export const stormNightSvg = require("./storm-night.svg");
+export const mistpng = require("./foggy.png");
