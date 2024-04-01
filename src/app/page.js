@@ -274,7 +274,7 @@ export default function Home() {
                       Thermal sensation
                     </div>
                   </div>
-                  <div className=' text-neutral-50 text-base font-bold  leading-snug'>
+                  <div className=' text-neutral-50 w-12 text-base font-bold  leading-snug'>
                     {weatherDetails.main.feels_like.toFixed()} °C
                   </div>
                 </div>
